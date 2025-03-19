@@ -129,7 +129,13 @@ const screenshots = new Map<string, string>();
 
 async function ensureBrowser() {
   if (!browser) {
-    browser = await puppeteer.launch({ headless: true });
+    if (process.env.PUPPETEER_CONNECT_URL) {
+      browser = await puppeteer.connect({
+        browserWSEndpoint: process.env.PUPPETEER_CONNECT_URL,
+      });
+    } else {
+      browser = await puppeteer.launch({ headless: true });
+    }
     const pages = await browser.pages();
     page = pages[0];
 
